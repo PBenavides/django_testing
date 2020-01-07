@@ -1,7 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-import re
+
+from nodos.models import Nodos
+
+from .models import Prueba_post
+import json
 # Create your views here.
 
 def home_view(request,*args,**kwargs):
@@ -19,23 +23,29 @@ def display_data_view(request, *args, **kwargs):
 #El comando curl para hacer el post es:
 #curl -i -X POST 'Content-Type: application/json' -d '{"name":"Pabloski", "action":"testeando","message":"gaaa"}' http://127.0.0.1:8000/get/
 
+
 def get_data_http(request,*args,**kwargs):
-    context = {"name":"Aun no hay data","action":"Aun no hay data","message":"aun no hay data"}
-    if request.method == 'POST':
-        lista_llaves = []
-        lista_valores = []
-        string = request.body.decode('utf-8')
-        regex = '"([^"]*)"'
-        lista_llaves_y_valores = re.findall(regex,string)
-        for id_llave, valor in enumerate(lista_llaves_y_valores):
-            if int(id_llave) % 2:
-                lista_valores.append(valor)
-            else:
-                lista_llaves.append(valor)
-        context = dict(zip(lista_llaves,lista_valores))
-        print('los valores son:', lista_valores)
-        print('las llaves son:', lista_llaves)
+    context = {}
+    #Lo debe coger en una especie de formulario
+    if request.method == 'POST': #Si el metodo es POST
+        string_data = request.body.decode('utf-8')
+        json_data = json.loads(string_data)
+        print(json_data)
+        # Ahora lo tendría que meter a la base de datos.
+        Prueba_post.objects.create(
+            name = json_data['name'],
+            action = json_data['action'],
+            message = json_data['message']
+        )
+    elif request.method == 'GET':
+        for num,data_object in enumerate(Prueba_post.objects.all()):
+            obj = data_object.objects.get(id=num+1)
+            context['object'+str(num)] = obj
+            print(context)
+    else: 
+        context = {"name":"Aun no hay data",
+        "action":"Aun no hay data",
+        "message":"aun no hay data"}
         
     return render(request,"get-data.html",context)
-
 

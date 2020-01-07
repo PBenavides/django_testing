@@ -1,4 +1,4 @@
-"""ECOBRIDGE URL Configuration
+"""ecobridge URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view,display_data_view,get_data_http
+from nodos.views import view_nodos
+from pages.views import home_view, get_data_http
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',home_view,name='home'),
-    path('',home_view),
-    path('display/',display_data_view),
+    path('nodos/', view_nodos, name='nodos'),
+    path('',home_view,name='home'),
     path('get/',get_data_http)
 ]
