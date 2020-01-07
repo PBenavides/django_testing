@@ -11,4 +11,6 @@ pymongo==3.10.0
 pytz==2019.3
 sqlparse==0.2.4
 
+and also MongoDB as database(any version)
 
+The main purpose is to have an API to get data via POST request and put it on functions to pull by a frontend user. 
